@@ -1,29 +1,43 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 
+from rest_framework.response import Response
 from rest_framework.generics import (
-    ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView
+    CreateAPIView
 )
 
-from .models import Client
-from .serializers import ClientSerializer
+from .models import Client, Payload, Payment
+from .serializers import ClientSerializer, PaymentSerializer, PayloadSerializer
 
 
-class ClientViewAll(ListCreateAPIView):
-    queryset = Client.objects.all()
+class ClientCreateView(CreateAPIView):
     serializer_class = ClientSerializer
 
-    def perform_create(self, serializer):
-        client_id = get_object_or_404(
-            Client, client_id = self.request.data.get('client_id')
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class PayloadCreateView(CreateAPIView):
+    serializer_class = PayloadSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class PaymentCreateView(CreateAPIView):
+    serializer_class = PaymentSerializer
+
+    def post(self, request, loan_id, *args, **kwargs):
+        loan = get_object_or_404(
+            Payload, loan_id=loan_id
         )
-        return serializer.save(client_id=client_id)
-
-
-class ClientIdView(RetrieveUpdateDestroyAPIView):
-    queryset = Client.objects.all()
-    serializer_class = ClientSerializer
-
+        data = request.data
+        data["loan_id"] = loan.loan_id
+        
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+        
 
 def test(request):
-    return redirect('http://google.com.br')
+    return HttpResponse("Loan Management System")
