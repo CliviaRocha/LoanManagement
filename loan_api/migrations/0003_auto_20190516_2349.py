@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='payload',
+            model_name='loan',
             name='client_id',
             field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.DO_NOTHING, to='loan_api.Client'),
             preserve_default=False,
@@ -21,10 +21,10 @@ class Migration(migrations.Migration):
             name='Payment',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('made', 'made'), ('missed', 'missed')], max_length=6, verbose_name='status')),
+                ('payment', models.CharField(choices=[('made', 'made'), ('missed', 'missed')], max_length=6, verbose_name='Payment')),
                 ('date', models.DateTimeField(verbose_name='Date')),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=15, verbose_name='Amount')),
-                ('loan_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='loan_api.Payload')),
+                ('loan_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='loan_api.Loan')),
             ],
             options={
                 'verbose_name': 'Payment',

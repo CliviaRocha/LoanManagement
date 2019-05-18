@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from decimal import Decimal
 from datetime import datetime, timezone
-from .models import Client, Payload, Payment
+from .models import Client, Loan, Payment
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -12,18 +12,18 @@ class ClientSerializer(serializers.ModelSerializer):
 
     def to_representation(self, obj):
         return {
-            "id": str(obj.id), 
+            "client_id": obj.client_id, 
         }
 
 
-class PayloadSerializer(serializers.ModelSerializer):
+class LoanSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Payload
+        model = Loan
         fields = "__all__"
 
     def to_representation(self, obj):
         return {
-            "id": str(obj.loan_id), 
+            "loan_id": str(obj.loan_id), 
             "installment": obj.instalment
             
         }
